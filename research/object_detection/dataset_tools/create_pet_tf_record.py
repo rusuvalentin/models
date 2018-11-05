@@ -48,12 +48,6 @@ flags.DEFINE_string('data_dir', '', 'Root directory to raw pet dataset.')
 flags.DEFINE_string('output_dir', '', 'Path to directory to output TFRecords.')
 flags.DEFINE_string('label_map_path', 'data/pet_label_map.pbtxt',
                     'Path to label map proto')
-flags.DEFINE_boolean('faces_only', True, 'If True, generates bounding boxes '
-                     'for pet faces.  Otherwise generates bounding boxes (as '
-                     'well as segmentations for full pet bodies).  Note that '
-                     'in the latter case, the resulting files are much larger.')
-flags.DEFINE_string('mask_type', 'png', 'How to represent instance '
-                    'segmentation masks. Options are "png" or "numerical".')
 flags.DEFINE_integer('num_shards', 10, 'Number of TFRecord shards')
 
 FLAGS = flags.FLAGS
@@ -74,7 +68,6 @@ def get_class_name_from_filename(file_name):
 
 
 def dict_to_tf_example(data,
-                       mask_path,
                        label_map_dict,
                        image_subdirectory,
                        ignore_difficult_instances=False,
@@ -114,19 +107,6 @@ def dict_to_tf_example(data,
     raise ValueError('Image format not JPEG')
   key = hashlib.sha256(encoded_jpg).hexdigest()
 
-  with tf.gfile.GFile(mask_path, 'rb') as fid:
-    encoded_mask_png = fid.read()
-  encoded_png_io = io.BytesIO(encoded_mask_png)
-  mask = PIL.Image.open(encoded_png_io)
-  if mask.format != 'PNG':
-    raise ValueError('Mask format not PNG')
-
-  mask_np = np.asarray(mask)
-  nonbackground_indices_x = np.any(mask_np != 2, axis=0)
-  nonbackground_indices_y = np.any(mask_np != 2, axis=1)
-  nonzero_x_indices = np.where(nonbackground_indices_x)
-  nonzero_y_indices = np.where(nonbackground_indices_y)
-
   width = int(data['size']['width'])
   height = int(data['size']['height'])
 
@@ -147,16 +127,10 @@ def dict_to_tf_example(data,
         continue
       difficult_obj.append(int(difficult))
 
-      if faces_only:
-        xmin = float(obj['bndbox']['xmin'])
-        xmax = float(obj['bndbox']['xmax'])
-        ymin = float(obj['bndbox']['ymin'])
-        ymax = float(obj['bndbox']['ymax'])
-      else:
-        xmin = float(np.min(nonzero_x_indices))
-        xmax = float(np.max(nonzero_x_indices))
-        ymin = float(np.min(nonzero_y_indices))
-        ymax = float(np.max(nonzero_y_indices))
+      xmin = float(obj['bndbox']['xmin'])
+      xmax = float(obj['bndbox']['xmax'])
+      ymin = float(obj['bndbox']['ymin'])
+      ymax = float(obj['bndbox']['ymax'])
 
       xmins.append(xmin / width)
       ymins.append(ymin / height)
@@ -167,29 +141,25 @@ def dict_to_tf_example(data,
       classes.append(label_map_dict[class_name])
       truncated.append(int(obj['truncated']))
       poses.append(obj['pose'].encode('utf8'))
-      if not faces_only:
-        mask_remapped = (mask_np != 2).astype(np.uint8)
-        masks.append(mask_remapped)
+
 
   feature_dict = {
       'image/height': dataset_util.int64_feature(height),
       'image/width': dataset_util.int64_feature(width),
-      'image/filename': dataset_util.bytes_feature(
+      'image/filename': dataset_util.bytes_feature(#imagepath
           data['filename'].encode('utf8')),
-      'image/source_id': dataset_util.bytes_feature(
+      'image/source_id': dataset_util.bytes_feature( #imagePath
           data['filename'].encode('utf8')),
-      'image/key/sha256': dataset_util.bytes_feature(key.encode('utf8')),
-      'image/encoded': dataset_util.bytes_feature(encoded_jpg),
+      'image/key/sha256': dataset_util.bytes_feature(key.encode('utf8')), #dont know
+      'image/encoded': dataset_util.bytes_feature(encoded_jpg), #encodedImage
       'image/format': dataset_util.bytes_feature('jpeg'.encode('utf8')),
       'image/object/bbox/xmin': dataset_util.float_list_feature(xmins),
       'image/object/bbox/xmax': dataset_util.float_list_feature(xmaxs),
       'image/object/bbox/ymin': dataset_util.float_list_feature(ymins),
       'image/object/bbox/ymax': dataset_util.float_list_feature(ymaxs),
-      'image/object/class/text': dataset_util.bytes_list_feature(classes_text),
-      'image/object/class/label': dataset_util.int64_list_feature(classes),
-      'image/object/difficult': dataset_util.int64_list_feature(difficult_obj),
-      'image/object/truncated': dataset_util.int64_list_feature(truncated),
-      'image/object/view': dataset_util.bytes_list_feature(poses),
+      'image/object/class/text': dataset_util.bytes_list_feature(classes_text), #name of the class
+      'image/object/class/label': dataset_util.int64_list_feature(classes), #id of the class from pbtxt
+
   }
   if not faces_only:
     if mask_type == 'numerical':
@@ -216,9 +186,7 @@ def create_tf_record(output_filename,
                      label_map_dict,
                      annotations_dir,
                      image_dir,
-                     examples,
-                     faces_only=True,
-                     mask_type='png'):
+                     examples):
   """Creates a TFRecord file from examples.
 
   Args:
@@ -271,21 +239,10 @@ def main(_):
   label_map_dict = label_map_util.get_label_map_dict(FLAGS.label_map_path)
 
   logging.info('Reading from Pet dataset.')
-  image_dir = os.path.join(data_dir, 'images')
-  annotations_dir = os.path.join(data_dir, 'annotations')
-  examples_path = os.path.join(annotations_dir, 'trainval.txt')
-  examples_list = dataset_util.read_examples_list(examples_path)
+
 
   # Test images are not included in the downloaded data set, so we shall perform
   # our own split.
-  random.seed(42)
-  random.shuffle(examples_list)
-  num_examples = len(examples_list)
-  num_train = int(0.7 * num_examples)
-  train_examples = examples_list[:num_train]
-  val_examples = examples_list[num_train:]
-  logging.info('%d training and %d validation examples.',
-               len(train_examples), len(val_examples))
 
   train_output_path = os.path.join(FLAGS.output_dir, 'pet_faces_train.record')
   val_output_path = os.path.join(FLAGS.output_dir, 'pet_faces_val.record')
@@ -300,18 +257,15 @@ def main(_):
       label_map_dict,
       annotations_dir,
       image_dir,
-      train_examples,
-      faces_only=FLAGS.faces_only,
-      mask_type=FLAGS.mask_type)
+      train_examples)
+
   create_tf_record(
       val_output_path,
       FLAGS.num_shards,
       label_map_dict,
       annotations_dir,
       image_dir,
-      val_examples,
-      faces_only=FLAGS.faces_only,
-      mask_type=FLAGS.mask_type)
+      val_examples)
 
 
 if __name__ == '__main__':

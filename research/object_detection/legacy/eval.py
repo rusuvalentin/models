@@ -43,6 +43,10 @@ Example usage:
         --model_config_path=model_config.pbtxt \
         --input_config_path=eval_input_config.pbtxt
 """
+
+import sys
+sys.path.append(r"C:\Users\valentru\PycharmProjects\models\research")
+sys.path.append(r"C:\Users\valentru\PycharmProjects\models\research\slim")
 import functools
 import os
 import tensorflow as tf

@@ -1,0 +1,136 @@
+item {
+  id: 1
+  name: 'n6_right_hand'
+}
+
+item {
+  id: 2
+  name: 'NO_right_hand'
+}
+
+item {
+  id: 3
+  name: 'n5_left_hand'
+}
+
+item {
+  id: 4
+  name: 'n6_left_hand'
+}
+
+item {
+  id: 5
+  name: 'n9_left_hand'
+}
+
+item {
+  id: 6
+  name: 'n4_left_hand'
+}
+
+item {
+  id: 7
+  name: 'HELP_right_hand'
+}
+
+item {
+  id: 8
+  name: 'YES_left_hand'
+}
+
+item {
+  id: 9
+  name: 'n3_left_hand'
+}
+
+item {
+  id: 10
+  name: 'NO_left_hand'
+}
+
+item {
+  id: 11
+  name: 'n2_left_hand'
+}
+
+item {
+  id: 12
+  name: 'n9_right_hand'
+}
+
+item {
+  id: 13
+  name: 'n8_right_hand'
+}
+
+item {
+  id: 14
+  name: 'n0_right_hand'
+}
+
+item {
+  id: 15
+  name: 'n7_right_hand'
+}
+
+item {
+  id: 16
+  name: 'n8_left_hand'
+}
+
+item {
+  id: 17
+  name: 'n2_right_hand'
+}
+
+item {
+  id: 18
+  name: 'HELP_left_hand'
+}
+
+item {
+  id: 19
+  name: 'n1_right_hand'
+}
+
+item {
+  id: 20
+  name: 'n1_left_hand'
+}
+
+item {
+  id: 21
+  name: 'n7_left_hand'
+}
+
+item {
+  id: 22
+  name: 'n5_right_hand'
+}
+
+item {
+  id: 23
+  name: 'n4_right_hand'
+}
+
+item {
+  id: 24
+  name: 'YES_right_hand'
+}
+
+item {
+  id: 25
+  name: 'n3_right_hand'
+}
+
+item {
+  id: 26
+  name: 'n0_left_hand'
+}
+
+item {
+  id: 27
+  name: 'none'
+}
+
+
