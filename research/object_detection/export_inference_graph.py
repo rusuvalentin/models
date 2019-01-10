@@ -91,6 +91,10 @@ python export_inference_graph \
               } \
             }"
 """
+import sys
+sys.path.append("/home/dyve/PycharmProjects/models/research/")
+sys.path.append("/home/dyve/PycharmProjects/models/research/slim")
+
 import tensorflow as tf
 from google.protobuf import text_format
 from object_detection import exporter

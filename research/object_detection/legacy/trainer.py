@@ -374,7 +374,7 @@ def train(create_tensor_dict_fn,
     keep_checkpoint_every_n_hours = train_config.keep_checkpoint_every_n_hours
     saver = tf.train.Saver(
         keep_checkpoint_every_n_hours=keep_checkpoint_every_n_hours,
-        max_to_keep=15)
+        max_to_keep=25)
 
     # Create ops required to initialize the model from a given checkpoint.
     init_fn = None

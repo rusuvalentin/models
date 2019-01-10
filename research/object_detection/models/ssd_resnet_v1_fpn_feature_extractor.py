@@ -121,6 +121,7 @@ class _SSDResnetV1FpnFeatureExtractor(ssd_meta_arch.SSDFeatureExtractor):
     """
     channel_means = [123.68, 116.779, 103.939]
     return resized_inputs - [[channel_means]]
+    # return (resized_inputs*1.0)/255
 
   def _filter_features(self, image_features):
     # TODO(rathodv): Change resnet endpoint to strip scope prefixes instead

@@ -14,7 +14,8 @@
 # ==============================================================================
 import sys
 """Label map utility functions."""
-sys.path.append(r"C:\Users\valentru\PycharmProjects\models\research\object_detection")
+sys.path.append("/home/dyve/PycharmProjects/models/research/object_detection")
+sys.path.append("/home/dyve/PycharmProjects/models/research/slim")
 
 import logging
 

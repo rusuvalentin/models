@@ -43,22 +43,27 @@ Example usage:
         --model_config_path=model_config.pbtxt \
         --input_config_path=eval_input_config.pbtxt
 """
-
-import sys
-sys.path.append(r"C:\Users\valentru\PycharmProjects\models\research")
-sys.path.append(r"C:\Users\valentru\PycharmProjects\models\research\slim")
+print("here0")
 import functools
 import os
 import tensorflow as tf
+import sys
+sys.path.append("/home/dyve/PycharmProjects/models/research/")
+sys.path.append("/home/dyve/PycharmProjects/models/research/slim")
 
 from object_detection.builders import dataset_builder
+print("here1")
 from object_detection.builders import graph_rewriter_builder
+print("here2")
 from object_detection.builders import model_builder
+print("here3")
 from object_detection.legacy import evaluator
+print("here4")
 from object_detection.utils import config_util
+print("here5")
 from object_detection.utils import label_map_util
 
-
+print("here6")
 tf.logging.set_verbosity(tf.logging.INFO)
 
 flags = tf.app.flags
@@ -109,6 +114,7 @@ def main(unused_argv):
 
   model_config = configs['model']
   eval_config = configs['eval_config']
+
   input_config = configs['eval_input_config']
   if FLAGS.eval_training_data:
     input_config = configs['train_input_config']
@@ -136,7 +142,6 @@ def main(unused_argv):
   if 'graph_rewriter_config' in configs:
     graph_rewriter_fn = graph_rewriter_builder.build(
         configs['graph_rewriter_config'], is_training=False)
-
   evaluator.evaluate(
       create_input_dict_fn,
       model_fn,

@@ -444,9 +444,8 @@ def repeated_checkpoint_run(tensor_dict,
       logging.info('Finished evaluation!')
       break
     time_to_next_eval = start + eval_interval_secs - time.time()
-    if time_to_next_eval > 0:
-      time.sleep(time_to_next_eval)
-
+    # if time_to_next_eval > 0:
+    #   time.sleep(time_to_next_eval)
   return metrics
 
 

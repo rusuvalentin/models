@@ -41,8 +41,9 @@ Example usage:
         --input_config_path=train_input_config.pbtxt
 """
 import sys
-sys.path.append(r"C:\Users\valentru\PycharmProjects\models\research")
-sys.path.append(r"C:\Users\valentru\PycharmProjects\models\research\slim")
+sys.path.append("/home/dyve/PycharmProjects/models/research/")
+sys.path.append("/home/dyve/PycharmProjects/models/research/slim")
+
 
 import functools
 import json

@@ -93,7 +93,7 @@ def main(_):
     model.Initialize(global_step, optimizer, model_config_string)
     model.BuildGraph(codes)
 
-    saver = tf.train.Saver(sharded=True, keep_checkpoint_every_n_hours=12.0)
+    saver = tf.train.Saver(sharded=True, keep_checkpoint_every_n_hours=1.0)
 
     with tf.Session(graph=graph) as sess:
       # Initialize local variables.

@@ -1,0 +1,38 @@
+item {
+  id: 1
+  name: 'NO_right_hand'
+}
+
+
+item {
+  id: 2
+  name: 'HELP_right_hand'
+}
+
+item {
+  id: 3
+  name: 'YES_left_hand'
+}
+
+
+item {
+  id: 4
+  name: 'NO_left_hand'
+}
+item {
+  id: 5
+  name: 'HELP_left_hand'
+}
+
+
+item {
+  id: 6
+  name: 'YES_right_hand'
+}
+
+item {
+  id: 7
+  name: 'none'
+}
+
+
